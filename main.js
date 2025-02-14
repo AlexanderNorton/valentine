@@ -21,16 +21,12 @@ const IntroScene = {
       fill: '#ffffff'
     }).setOrigin(0.5);
 
-    const introVideo = this.add.video(centerX, centerY, 'intro');
-
-    introVideo.once('complete', () => {
-      this.scene.start('StartScene');
-    });
-
     this.input.once('pointerdown', () => {
       if (this.sound.context.state === 'suspended') {
         this.sound.context.resume();
       }
+
+      introVideo = this.add.video(centerX, centerY, 'intro');
 
       introVideo.setOrigin(0.5);
 
@@ -101,6 +97,7 @@ const StartScene = {
   }
 };
 
+let introVideo;
 let currentRoomIndex = 0;
 let character;
 let interactButton;
@@ -250,7 +247,7 @@ function create() {
   this.physics.add.collider(character, this.walls);
 
   // Go to the initial room
-  switchRoom(this, 0);
+  switchRoom(this, 20);
 
   timerText = this.add.text(10, 940, formatTime(countdown), {
     font: '52px Arial',
