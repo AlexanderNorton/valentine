@@ -1,3 +1,6 @@
+// ----------------------------------------------------
+// 1) INTRO SCENE (THE VIDEO INTRO)
+// ----------------------------------------------------
 const IntroScene = {
   key: 'IntroScene',
 
@@ -7,6 +10,19 @@ const IntroScene = {
   },
 
   create: function () {
+    // ===============================================
+    // RESUME AUDIO CONTEXT ONCE USER INTERACTS
+    // ===============================================
+    // 1) If user clicks anywhere
+    this.input.once('pointerdown', () => {
+      if (this.sound.context.state === 'suspended') {
+        this.sound.context.resume();
+      }
+    });
+    // 2) Also if user presses SPACE
+    //    (Inside the keydown-SPACE event below)
+    // ===============================================
+
     // Center of the screen
     const centerX = this.cameras.main.width / 2;
     const centerY = this.cameras.main.height / 2;
@@ -28,6 +44,11 @@ const IntroScene = {
 
     // Optional: let player skip with SPACE
     this.input.keyboard.once('keydown-SPACE', () => {
+      // Resume audio context here as well
+      if (this.sound.context.state === 'suspended') {
+        this.sound.context.resume();
+      }
+
       // Stop video & jump to StartScene
       introVideo.stop();
       this.scene.start('StartScene');
@@ -105,7 +126,8 @@ let spaceKey;
 
 // Countdown-related variables
 let timerText;
-let countdown = (5 * 60) + 8; // 4 minutes in seconds = 240
+// Adjusted from your comments: (5 * 60) + 8 = 308 seconds
+let countdown = (5 * 60) + 8;
 let shouldCountdown = true;
 
 // Popup text box variables
@@ -118,15 +140,11 @@ let footstepsSound;  // Looping footsteps audio
 
 const MainScene = {
   key: 'MainScene',
-
   preload: preload,
   create: create,
   update: update
 };
 
-// ---------------------------------------------
-// EXACT DEFINITIONS OF YOUR PRELOAD/CREATE/UPDATE
-// ---------------------------------------------
 function preload() {
   // Background music
   this.load.audio('bgMusic', 'assets/music/the_journey.mp3');
@@ -515,7 +533,7 @@ function playOutro(scene) {
   bgMusic.stop();
 
   popupShown = false;
-  shouldCountdown = false
+  shouldCountdown = false;
 
   // Hide the image popup
   popupElement.node.style.display = 'none';
@@ -525,12 +543,10 @@ function playOutro(scene) {
   popupText.setVisible(false);
   popupTextBackground.setVisible(false);
 
-
   // Stop previous room sound
   if (roomSound) {
     roomSound.stop();
   }
-
 
   popupTextBackground.setVisible(false);
 
@@ -571,9 +587,7 @@ const config = {
       debug: false
     }
   },
-  // The order matters: we start with the IntroScene -> StartScene -> MainScene
   scene: [IntroScene, StartScene, MainScene]
 };
 
-// Finally, create the Phaser game instance
 const game = new Phaser.Game(config);
