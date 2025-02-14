@@ -309,17 +309,17 @@ function create() {
 function update() {
   // Player movement
   if (cursors.left.isDown) {
-    character.setVelocityX(-250);
+    character.setVelocityX(-300);
   } else if (cursors.right.isDown) {
-    character.setVelocityX(250);
+    character.setVelocityX(300);
   } else {
     character.setVelocityX(0);
   }
 
   if (cursors.up.isDown) {
-    character.setVelocityY(-250);
+    character.setVelocityY(-300);
   } else if (cursors.down.isDown) {
-    character.setVelocityY(250);
+    character.setVelocityY(300);
   } else {
     character.setVelocityY(0);
   }
