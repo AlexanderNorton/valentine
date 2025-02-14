@@ -10,19 +10,6 @@ const IntroScene = {
   },
 
   create: function () {
-    // ===============================================
-    // RESUME AUDIO CONTEXT ONCE USER INTERACTS
-    // ===============================================
-    // 1) If user clicks anywhere
-    this.input.once('pointerdown', () => {
-      if (this.sound.context.state === 'suspended') {
-        this.sound.context.resume();
-      }
-    });
-    // 2) Also if user presses SPACE
-    //    (Inside the keydown-SPACE event below)
-    // ===============================================
-
     // Center of the screen
     const centerX = this.cameras.main.width / 2;
     const centerY = this.cameras.main.height / 2;
@@ -31,24 +18,45 @@ const IntroScene = {
     const introVideo = this.add.video(centerX, centerY, 'intro');
     introVideo.setOrigin(0.5);
 
-    // Play the video (false -> not looping)
-    introVideo.play(false);
-    introVideo.setPaused(false);
-    introVideo.setMute(false);
-    introVideo.setVolume(1);
+    // ---------------------------------------------------------------------------------
+    // The lines below are what used to automatically play/unmute the video:
+    //
+    //     introVideo.play(false);
+    //     introVideo.setPaused(false);
+    //     introVideo.setMute(false);
+    //     introVideo.setVolume(1);
+    //
+    // We move them inside a user gesture event instead, to satisfy browser autoplay rules.
+    // ---------------------------------------------------------------------------------
 
     // Once the video finishes, automatically move on
     introVideo.once('complete', () => {
       this.scene.start('StartScene');
     });
 
-    // Optional: let player skip with SPACE
-    this.input.keyboard.once('keydown-SPACE', () => {
-      // Resume audio context here as well
+    // --------------------------------------------------------
+    // 1) FIRST USER-CLICK (pointerdown) => Resume AudioContext,
+    //    and THEN play/unmute intro video
+    // --------------------------------------------------------
+    this.input.once('pointerdown', () => {
       if (this.sound.context.state === 'suspended') {
         this.sound.context.resume();
       }
+      // Now that we have a user gesture, we can safely play/unmute
+      introVideo.play(false);
+      introVideo.setPaused(false);
+      introVideo.setMute(false);
+      introVideo.setVolume(1);
+    });
 
+    // --------------------------------------------------------
+    // 2) Also let the user skip with SPACE
+    //    We resume AudioContext + skip to StartScene
+    // --------------------------------------------------------
+    this.input.keyboard.once('keydown-SPACE', () => {
+      if (this.sound.context.state === 'suspended') {
+        this.sound.context.resume();
+      }
       // Stop video & jump to StartScene
       introVideo.stop();
       this.scene.start('StartScene');
@@ -126,8 +134,7 @@ let spaceKey;
 
 // Countdown-related variables
 let timerText;
-// Adjusted from your comments: (5 * 60) + 8 = 308 seconds
-let countdown = (5 * 60) + 8;
+let countdown = (5 * 60) + 8; // 4 minutes + 8s = 308s
 let shouldCountdown = true;
 
 // Popup text box variables
@@ -527,7 +534,6 @@ function updateCountdown() {
   }
 }
 
-// Updated playOutro to accept 'scene' explicitly
 function playOutro(scene) {
   // Stop background music
   bgMusic.stop();
@@ -587,7 +593,9 @@ const config = {
       debug: false
     }
   },
+  // The order matters: we start with the IntroScene -> StartScene -> MainScene
   scene: [IntroScene, StartScene, MainScene]
 };
 
+// Finally, create the Phaser game instance
 const game = new Phaser.Game(config);
