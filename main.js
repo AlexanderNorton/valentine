@@ -1,6 +1,9 @@
-// ----------------------------------------------------
-// 1) INTRO SCENE (THE VIDEO INTRO)
-// ----------------------------------------------------
+// For my lovely girlfriend, Belen..
+// I spent many hours writing up this code
+// Even though you rage quit this game after 15 mins
+// I still love you <3
+// 14/02/2025
+
 const IntroScene = {
   key: 'IntroScene',
 
@@ -10,68 +13,47 @@ const IntroScene = {
   },
 
   create: function () {
-    // Center of the screen
     const centerX = this.cameras.main.width / 2;
     const centerY = this.cameras.main.height / 2;
 
-    // Add the video object, centered
+    this.add.text(centerX, centerY, 'Click Here to Start <3', {
+      font: '40px Arial',
+      fill: '#ffffff'
+    }).setOrigin(0.5);
+
     const introVideo = this.add.video(centerX, centerY, 'intro');
     introVideo.setOrigin(0.5);
 
-    // ---------------------------------------------------------------------------------
-    // The lines below are what used to automatically play/unmute the video:
-    //
-    //     introVideo.play(false);
-    //     introVideo.setPaused(false);
-    //     introVideo.setMute(false);
-    //     introVideo.setVolume(1);
-    //
-    // We move them inside a user gesture event instead, to satisfy browser autoplay rules.
-    // ---------------------------------------------------------------------------------
-
-    // Once the video finishes, automatically move on
     introVideo.once('complete', () => {
       this.scene.start('StartScene');
     });
 
-    // --------------------------------------------------------
-    // 1) FIRST USER-CLICK (pointerdown) => Resume AudioContext,
-    //    and THEN play/unmute intro video
-    // --------------------------------------------------------
     this.input.once('pointerdown', () => {
       if (this.sound.context.state === 'suspended') {
         this.sound.context.resume();
       }
-      // Now that we have a user gesture, we can safely play/unmute
+
       introVideo.play(false);
       introVideo.setPaused(false);
       introVideo.setMute(false);
       introVideo.setVolume(1);
     });
 
-    // --------------------------------------------------------
-    // 2) Also let the user skip with SPACE
-    //    We resume AudioContext + skip to StartScene
-    // --------------------------------------------------------
     this.input.keyboard.once('keydown-SPACE', () => {
       if (this.sound.context.state === 'suspended') {
         this.sound.context.resume();
       }
-      // Stop video & jump to StartScene
+
       introVideo.stop();
       this.scene.start('StartScene');
     });
   }
 };
 
-// ----------------------------------------------------
-// 2) START SCENE (HOW TO PLAY / TITLE SCREEN)
-// ----------------------------------------------------
 const StartScene = {
   key: 'StartScene',
 
   preload: function () {
-    // (Optional) Load a background image or anything else
   },
 
   create: function () {
@@ -108,7 +90,6 @@ const StartScene = {
       fill: '#ffffff'
     }).setOrigin(0.5);
 
-    // SPACE key for starting the MainScene
     spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
   },
 
@@ -119,9 +100,6 @@ const StartScene = {
   }
 };
 
-// ----------------------------------------------------
-// 3) MAIN SCENE (YOUR ORIGINAL GAME CODE)
-// ----------------------------------------------------
 let currentRoomIndex = 0;
 let character;
 let interactButton;
@@ -134,7 +112,7 @@ let spaceKey;
 
 // Countdown-related variables
 let timerText;
-let countdown = (6 * 60) + 8; // 4 minutes + 8s = 308s
+let countdown = (5 * 60);
 let shouldCountdown = true;
 
 // Popup text box variables
@@ -142,8 +120,8 @@ let popupTextBackground;
 let popupText;
 
 // For walking animation/sound
-let walkingGif;      // DOM element that displays the GIF
-let footstepsSound;  // Looping footsteps audio
+let walkingGif;
+let footstepsSound; 
 
 const MainScene = {
   key: 'MainScene',
@@ -162,7 +140,7 @@ function preload() {
   // Wall image
   this.load.image('wall', 'assets/objects/heartwall.png');
 
-  // Enemy sprites (multiple gremlins)
+  // Enemy sprites
   this.load.image('enemy1', 'assets/characters/gremlin_1.png');
   this.load.image('enemy2', 'assets/characters/gremlin_2.png');
 
@@ -212,7 +190,7 @@ function preload() {
   this.load.audio('room20Sound', 'assets/sounds/oeea.mp3');
   this.load.audio('room21Sound', 'assets/sounds/kids.mp3');
 
-  // NEW: Footsteps audio
+  // Footsteps Audio
   this.load.audio('footsteps', 'assets/sounds/footsteps.mp3');
 }
 
@@ -225,8 +203,7 @@ function create() {
   cursors = this.input.keyboard.createCursorKeys();
   spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
-  // Create the character (sprite for physics/collisions)
-  character = this.physics.add.sprite(0, 0, 'belen_cat').setScale(0.3);
+  character = this.physics.add.sprite(0, 0, 'belen_cat').setScale(0.2);
   character.setCollideWorldBounds(true);
   character.setOrigin(0.5, 0.5);
 
@@ -234,18 +211,16 @@ function create() {
   interactButton = this.physics.add.sprite(0, 0, '').setScale(0.1);
   interactButton.setInteractive();
 
-  // DOM element for the image popup
   popupElement = this.add.dom(
     this.game.config.width / 2,
     this.game.config.height / 2,
     'img'
   );
   popupElement.setOrigin(0);
-  popupElement.node.style.display = 'none'; // hidden by default
+  popupElement.node.style.display = 'none';
   popupElement.node.style.maxWidth = '400px';
   popupElement.node.style.maxHeight = '400px';
 
-  // CREATE THE TOP TEXT BOX
   popupTextBackground = this.add.rectangle(
     0,
     0,
@@ -265,29 +240,23 @@ function create() {
   popupText.setDepth(10000);
   popupText.setVisible(false);
 
-  // Create a static group for walls (populated per room)
   this.walls = this.physics.add.staticGroup();
 
-  // Create a group for enemies
   this.enemies = this.physics.add.group();
 
-  // Overlap detection between player & enemies = game over
   this.physics.add.overlap(character, this.enemies, handleGameOver, null, this);
 
-  // Collide the character with walls
   this.physics.add.collider(character, this.walls);
 
   // Go to the initial room
-  switchRoom(this, 0);
+  switchRoom(this, 20);
 
-  // CREATE THE COUNTDOWN TIMER TEXT
   timerText = this.add.text(10, 940, formatTime(countdown), {
     font: '52px Arial',
     fill: '#000000',
   });
   timerText.setDepth(10001);
 
-  // A timed event that fires every second to update the countdown
   this.time.addEvent({
     delay: 1000,
     callback: updateCountdown,
@@ -309,27 +278,25 @@ function create() {
 function update() {
   // Player movement
   if (cursors.left.isDown) {
-    character.setVelocityX(-250);
+    character.setVelocityX(-350);
   } else if (cursors.right.isDown) {
-    character.setVelocityX(250);
+    character.setVelocityX(350);
   } else {
     character.setVelocityX(0);
   }
 
   if (cursors.up.isDown) {
-    character.setVelocityY(-250);
+    character.setVelocityY(-350);
   } else if (cursors.down.isDown) {
-    character.setVelocityY(250);
+    character.setVelocityY(350);
   } else {
     character.setVelocityY(0);
   }
 
-  // Check if the character is moving
   const vx = character.body.velocity.x;
   const vy = character.body.velocity.y;
   const isMoving = (vx !== 0 || vy !== 0);
 
-  // Show/hide the walking GIF accordingly, and sync positions
   if (isMoving) {
     character.alpha = 0;
     walkingGif.alpha = 1;
@@ -367,14 +334,10 @@ function update() {
   });
 }
 
-// ----------------------------------
-// ROOM / GAME HELPER FUNCTIONS
-// ----------------------------------
 function switchRoom(scene, index) {
   currentRoomIndex = index;
   const room = rooms[currentRoomIndex];
 
-  // Change background color
   scene.cameras.main.setBackgroundColor(room.background);
 
   // Reposition character
@@ -418,19 +381,19 @@ function switchRoom(scene, index) {
     let x, y;
     const edge = Phaser.Math.Between(0, 3);
     switch (edge) {
-      case 0: // Left side
+      case 0:
         x = Phaser.Math.Between(-100, -50);
         y = Phaser.Math.Between(0, 1000);
         break;
-      case 1: // Right side
+      case 1:
         x = Phaser.Math.Between(1050, 1100);
         y = Phaser.Math.Between(0, 1000);
         break;
-      case 2: // Top side
+      case 2:
         x = Phaser.Math.Between(0, 1000);
         y = Phaser.Math.Between(-100, -50);
         break;
-      case 3: // Bottom side
+      case 3:
         x = Phaser.Math.Between(0, 1000);
         y = Phaser.Math.Between(1050, 1100);
         break;
@@ -448,15 +411,13 @@ function showPopup(scene) {
   const room = rooms[currentRoomIndex];
 
   shouldCountdown = true;
-  // Pause the physics
+
   scene.physics.world.pause();
 
-  // Show the image popup
   popupElement.setPosition(scene.game.config.width / 2, scene.game.config.height / 2);
   popupElement.node.style.display = 'block';
   popupElement.node.src = room.popupImage + '?t=' + Date.now();
 
-  // Show the text box at the top
   popupText.setText(room.popupText || '');
   popupText.setVisible(true);
   popupTextBackground.setVisible(true);
@@ -475,25 +436,19 @@ function hidePopup(scene) {
   popupShown = false;
   shouldCountdown = true;
 
-  // Hide the image popup
   popupElement.node.style.display = 'none';
   popupElement.node.src = '';
 
-  // Hide the text box
   popupText.setVisible(false);
   popupTextBackground.setVisible(false);
 
-  // Resume physics
   scene.physics.world.resume();
 
-  // Resume background music
   bgMusic.resume();
 }
 
 function goToNextRoom(scene) {
-  // Check if we've reached the end of the rooms:
   if (currentRoomIndex === rooms.length - 1) {
-    // Pass the scene object to playOutro
     playOutro(scene);
     return;
   }
@@ -503,13 +458,9 @@ function goToNextRoom(scene) {
 }
 
 function handleGameOver(player, enemy) {
-  // Restart the scene from the current room
   switchRoom(this, currentRoomIndex);
 }
 
-// ----------------------------------
-// COUNTDOWN HELPER FUNCTIONS
-// ----------------------------------
 function formatTime(seconds) {
   const minutes = Math.floor(seconds / 60);
   let partInSeconds = seconds % 60;
@@ -535,21 +486,17 @@ function updateCountdown() {
 }
 
 function playOutro(scene) {
-  // Stop background music
   bgMusic.stop();
 
   popupShown = false;
   shouldCountdown = false;
 
-  // Hide the image popup
   popupElement.node.style.display = 'none';
   popupElement.node.src = '';
 
-  // Hide the text box
   popupText.setVisible(false);
   popupTextBackground.setVisible(false);
 
-  // Stop previous room sound
   if (roomSound) {
     roomSound.stop();
   }
@@ -559,11 +506,9 @@ function playOutro(scene) {
   const centerX = scene.cameras.main.width / 2;
   const centerY = scene.cameras.main.height / 2;
 
-  // Add the video object, centered
   const outroVideo = scene.add.video(centerX, centerY, 'outro');
   outroVideo.setOrigin(0.5);
 
-  // Play the video (false -> not looping)
   outroVideo.play(false);
   outroVideo.setPaused(false);
   outroVideo.setMute(false);
@@ -571,13 +516,9 @@ function playOutro(scene) {
 }
 
 function handleTimeUp() {
-  // Simple example: just restart the whole scene
   this.scene.restart();
 }
 
-// ----------------------------------------------------
-// 4) PHASER GAME CONFIG – Now with 3 Scenes
-// ----------------------------------------------------
 const config = {
   type: Phaser.AUTO,
   width: 1000,
@@ -593,9 +534,7 @@ const config = {
       debug: false
     }
   },
-  // The order matters: we start with the IntroScene -> StartScene -> MainScene
   scene: [IntroScene, StartScene, MainScene]
 };
 
-// Finally, create the Phaser game instance
 const game = new Phaser.Game(config);
