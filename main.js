@@ -8,8 +8,8 @@ const IntroScene = {
   key: 'IntroScene',
 
   preload: function () {
-    this.load.video('intro', 'assets/videos/intro_2.mp4', 'loadeddata', false, false);
-    this.load.video('outro', 'assets/videos/outro_2.mp4', 'loadeddata', false, false);
+    this.load.video('intro', 'assets/videos/intro_2.mp4');
+    this.load.video('outro', 'assets/videos/outro_2.mp4');
   },
 
   create: function () {
@@ -22,14 +22,18 @@ const IntroScene = {
     }).setOrigin(0.5);
 
     this.input.once('pointerdown', () => {
+      // ✅ Ensure audio is allowed to play
       if (this.sound.context.state === 'suspended') {
-        this.sound.context.resume();
+        this.sound.context.resume().then(() => {
+          console.log('AudioContext resumed successfully');
+        }).catch(err => {
+          console.error('Error resuming AudioContext:', err);
+        });
       }
 
-      introVideo = this.add.video(centerX, centerY, 'intro');
-
+      // ✅ Create and play video after user interaction
+      const introVideo = this.add.video(centerX, centerY, 'intro');
       introVideo.setOrigin(0.5);
-
       introVideo.play(false);
       introVideo.setPaused(false);
       introVideo.setMute(false);
@@ -41,7 +45,6 @@ const IntroScene = {
         this.sound.context.resume();
       }
 
-      introVideo.stop();
       this.scene.start('StartScene');
     });
   }
@@ -97,7 +100,6 @@ const StartScene = {
   }
 };
 
-let introVideo;
 let currentRoomIndex = 0;
 let character;
 let interactButton;
