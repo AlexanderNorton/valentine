@@ -53,7 +53,7 @@ window.rooms = [
     buttonPosition: { x: 700, y: 450 },
     characterStart: { x: 60, y: 400 },
     objectSize: 0.3,
-    numEnemies: 3,
+    numEnemies: 2,
     walls: [
       { x: 150, y: 500, texture: 'wall', width: 100, height: 30 },
       { x: 600, y: 500, texture: 'wall', width: 50,  height: 500 }
@@ -68,7 +68,7 @@ window.rooms = [
     buttonPosition: { x: 900, y: 900 },
     characterStart: { x: 90, y: 350 },
     objectSize: 0.03,
-    numEnemies: 3,
+    numEnemies: 2,
     walls: [
       { x: 200, y: 500, texture: 'wall', width: 400, height: 40 },
       { x: 800, y: 800, texture: 'wall', width: 50,  height: 250 }
@@ -83,7 +83,7 @@ window.rooms = [
     buttonPosition: { x: 650, y: 100 },
     characterStart: { x: 100, y: 900 },
     objectSize: 0.1,
-    numEnemies: 4,
+    numEnemies: 3,
     walls: [
       { x: 300, y: 600, texture: 'wall', width: 180, height: 80 },
       { x: 800, y: 400, texture: 'wall', width: 400,  height: 200 }
@@ -98,7 +98,7 @@ window.rooms = [
     buttonPosition: { x: 900, y: 100 },
     characterStart: { x: 100, y: 900 },
     objectSize: 0.1,
-    numEnemies: 4,
+    numEnemies: 3,
     walls: [
       { x: 300, y: 500, texture: 'wall', width: 420, height: 50 },
       { x: 750, y: 750, texture: 'wall', width: 80,  height: 180 }
@@ -113,7 +113,7 @@ window.rooms = [
     buttonPosition: { x: 800, y: 600 },
     characterStart: { x: 50, y: 700 },
     objectSize: 0.3,
-    numEnemies: 5,
+    numEnemies: 3,
     walls: [
       { x: 500, y: 600, texture: 'wall', width: 100, height: 400 },
       { x: 900, y: 300, texture: 'wall', width: 300, height: 50 }
@@ -128,7 +128,7 @@ window.rooms = [
     buttonPosition: { x: 900, y: 400 },
     characterStart: { x: 100, y: 600 },
     objectSize: 0.03,
-    numEnemies: 5,
+    numEnemies: 3,
     walls: [
       { x: 300, y: 500, texture: 'wall', width: 150, height: 40 },
       { x: 700, y: 700, texture: 'wall', width: 50,  height: 400 }
@@ -143,7 +143,7 @@ window.rooms = [
     buttonPosition: { x: 900, y: 800 },
     characterStart: { x: 150, y: 200 },
     objectSize: 0.1,
-    numEnemies: 5,
+    numEnemies: 3,
     walls: [
       { x: 500, y: 600, texture: 'wall', width: 420, height: 60 },
       { x: 250, y: 800, texture: 'wall', width: 50, height: 150 }
@@ -158,7 +158,7 @@ window.rooms = [
     buttonPosition: { x: 950, y: 900 },
     characterStart: { x: 120, y: 200 },
     objectSize: 0.1,
-    numEnemies: 6,
+    numEnemies: 4,
     walls: [
       { x: 900, y: 800, texture: 'wall', width: 340, height: 40 },
       { x: 200, y: 900, texture: 'wall', width: 70,  height: 200 }
@@ -173,7 +173,7 @@ window.rooms = [
     buttonPosition: { x: 900, y: 50 },
     characterStart: { x: 60, y: 550 },
     objectSize: 0.1,
-    numEnemies: 6,
+    numEnemies: 4,
     walls: [
       { x: 900, y: 150, texture: 'wall', width: 400, height: 50 },
       { x: 600, y: 700, texture: 'wall', width: 100, height: 150 }
@@ -188,7 +188,7 @@ window.rooms = [
     buttonPosition: { x: 950, y: 750 },
     characterStart: { x: 110, y: 550 },
     objectSize: 0.1,
-    numEnemies: 6,
+    numEnemies: 4,
     walls: [
       { x: 300, y: 800, texture: 'wall', width: 200, height: 50 },
       { x: 800, y: 800, texture: 'wall', width: 60,  height: 180 }
@@ -203,7 +203,7 @@ window.rooms = [
     buttonPosition: { x: 600, y: 950 },
     characterStart: { x: 100, y: 100 },
     objectSize: 0.3,
-    numEnemies: 7,
+    numEnemies: 4,
     walls: [
       { x: 500, y: 800, texture: 'wall', width: 200, height: 100 },
       { x: 500, y: 950, texture: 'wall', width: 50, height: 170 }
@@ -218,7 +218,7 @@ window.rooms = [
     buttonPosition: { x: 950, y: 250 },
     characterStart: { x: 75, y: 800 },
     objectSize: 0.01,
-    numEnemies: 7,
+    numEnemies: 4,
     walls: [
       { x: 400, y: 600, texture: 'wall', width: 200, height: 60 },
       { x: 800, y: 400, texture: 'wall', width: 80,  height: 200 }
@@ -233,7 +233,7 @@ window.rooms = [
     buttonPosition: { x: 500, y: 700 },
     characterStart: { x: 150, y: 50 },
     objectSize: 0.1,
-    numEnemies: 7,
+    numEnemies: 4,
     walls: [
       { x: 400, y: 390, texture: 'wall', width: 550, height: 40 },
       { x: 700, y: 500, texture: 'wall', width: 50,  height: 420 }
@@ -248,7 +248,7 @@ window.rooms = [
     buttonPosition: { x: 950, y: 950 },
     characterStart: { x: 120, y: 700 },
     objectSize: 0.3,
-    numEnemies: 8,
+    numEnemies: 4,
     walls: [
       { x: 700, y: 600, texture: 'wall', width: 200, height: 50 },
       { x: 800, y: 900, texture: 'wall', width: 150, height: 150 }
@@ -263,7 +263,7 @@ window.rooms = [
     buttonPosition: { x: 900, y: 700 },
     characterStart: { x: 80, y: 730 },
     objectSize: 0.2,
-    numEnemies: 8,
+    numEnemies: 4,
     walls: [
       { x: 400, y: 500, texture: 'wall', width: 250, height: 40 },
       { x: 700, y: 800, texture: 'wall', width: 80,  height: 500 }
@@ -278,7 +278,7 @@ window.rooms = [
     buttonPosition: { x: 900, y: 200 },
     characterStart: { x: 140, y: 450 },
     objectSize: 0.1,
-    numEnemies: 8,
+    numEnemies: 5,
     walls: [
       { x: 600, y: 500, texture: 'wall', width: 200, height: 60 },
       { x: 300, y: 330, texture: 'wall', width: 600, height: 50 }
@@ -293,7 +293,7 @@ window.rooms = [
     buttonPosition: { x: 800, y: 800 },
     characterStart: { x: 200, y: 300 },
     objectSize: 0.05,
-    numEnemies: 8,
+    numEnemies: 5,
     walls: [
       { x: 350, y: 500, texture: 'wall', width: 400, height: 50 },
       { x: 650, y: 700, texture: 'wall', width: 300, height: 50 }
@@ -308,7 +308,7 @@ window.rooms = [
     buttonPosition: { x: 980, y: 900 },
     characterStart: { x: 100, y: 80 },
     objectSize: 0.1,
-    numEnemies: 10,
+    numEnemies: 6,
     walls: [
       { x: 400, y: 400, texture: 'wall', width: 250, height: 50 },
       { x: 800, y: 900, texture: 'wall', width: 70,  height: 200 }
