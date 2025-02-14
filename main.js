@@ -22,7 +22,6 @@ const IntroScene = {
     }).setOrigin(0.5);
 
     this.input.once('pointerdown', () => {
-      // ✅ Ensure audio is allowed to play
       if (this.sound.context.state === 'suspended') {
         this.sound.context.resume().then(() => {
           console.log('AudioContext resumed successfully');
@@ -31,7 +30,6 @@ const IntroScene = {
         });
       }
 
-      // ✅ Create and play video after user interaction
       const introVideo = this.add.video(centerX, centerY, 'intro');
       introVideo.setOrigin(0.5);
       introVideo.play(false);
@@ -249,7 +247,7 @@ function create() {
   this.physics.add.collider(character, this.walls);
 
   // Go to the initial room
-  switchRoom(this, 20);
+  switchRoom(this, 0);
 
   timerText = this.add.text(10, 940, formatTime(countdown), {
     font: '52px Arial',
