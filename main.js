@@ -362,7 +362,7 @@ function update() {
   // Enemies chase the player
   this.enemies.children.iterate((enemy) => {
     if (enemy && enemy.active) {
-      this.physics.moveToObject(enemy, character, 100);
+      this.physics.moveToObject(enemy, character, 80);
     }
   });
 }
