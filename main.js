@@ -22,7 +22,6 @@ const IntroScene = {
     }).setOrigin(0.5);
 
     const introVideo = this.add.video(centerX, centerY, 'intro');
-    introVideo.setOrigin(0.5);
 
     introVideo.once('complete', () => {
       this.scene.start('StartScene');
@@ -32,6 +31,8 @@ const IntroScene = {
       if (this.sound.context.state === 'suspended') {
         this.sound.context.resume();
       }
+
+      introVideo.setOrigin(0.5);
 
       introVideo.play(false);
       introVideo.setPaused(false);
