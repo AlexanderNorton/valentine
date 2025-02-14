@@ -226,7 +226,7 @@ function create() {
   spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
   // Create the character (sprite for physics/collisions)
-  character = this.physics.add.sprite(0, 0, 'belen_cat').setScale(0.2);
+  character = this.physics.add.sprite(0, 0, 'belen_cat').setScale(0.3);
   character.setCollideWorldBounds(true);
   character.setOrigin(0.5, 0.5);
 
