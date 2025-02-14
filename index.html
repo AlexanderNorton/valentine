@@ -3,24 +3,47 @@
 
 <head>
   <meta charset="UTF-8" />
-  <title>Happy Valentines Cuchicu</title>
+  <title>Valentine's Phaser Game</title>
   <style>
     body {
       margin: 0;
-      padding: 0;
+      background: #f0f0f0;
     }
 
-    canvas {
+    #game-container {
+      margin: 0 auto;
       display: block;
     }
   </style>
 </head>
 
 <body>
-  <!-- Load Phaser 3 from CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.js"></script>
-  <!-- Load our main game script -->
+  <div id="game-container"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.js"></script>
+  <script src="rooms.js"></script>
   <script src="main.js"></script>
+  <style>
+    body {
+      margin: 0;
+      background: #f0f0f0;
+      display: flex;
+      justify-content: center;
+      /* Horizontal center */
+      align-items: center;
+      /* Vertical center */
+      min-height: 100vh;
+      /* Ensure body takes up full viewport height */
+    }
+
+    #game-container {
+      /*  margin: 0 auto;  No longer needed */
+      display: block;
+      /* or inline-block if needed */
+    }
+  </style>
 </body>
+
+
 
 </html>
