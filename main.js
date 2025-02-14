@@ -11,34 +11,30 @@ const IntroScene = {
   },
 
   create: function () {
-    // IMPORTANT: Resume audio context on user click (pointerdown)
-    // This fixes the "AudioContext not allowed to start" warning.
-    this.input.once('pointerdown', () => {
-      // Resume Phaser's audio context on first pointer interaction
-      this.sound.context.resume();
-    });
-
     // Center of the screen
     const centerX = this.cameras.main.width / 2;
     const centerY = this.cameras.main.height / 2;
 
-    // Add the video object, centered
+    // Add the video object, centered, and keep it muted initially
     const introVideo = this.add.video(centerX, centerY, 'intro');
     introVideo.setOrigin(0.5);
-
-    // Play the video, but it won't have audio until the user clicks
-    // (At least the visual part should play automatically in most browsers.)
-    introVideo.play(false);
+    introVideo.play(false);     // Play but keep audio muted until user gesture
     introVideo.setPaused(false);
-    introVideo.setMute(false);
-    introVideo.setVolume(1);
+    introVideo.setMute(true);   // <--- Important: Mute to avoid auto-play audio error
 
     // Once the video finishes, automatically move on
     introVideo.once('complete', () => {
       this.scene.start('StartScene');
     });
 
-    // Optional: let player skip with SPACE
+    // IMPORTANT: On first pointerdown, unmute and resume audio
+    this.input.once('pointerdown', () => {
+      this.sound.context.resume();  // Resume Phaser's audio context
+      introVideo.setMute(false);    // Unmute the video once we have user interaction
+      introVideo.setVolume(1);      
+    });
+
+    // Optional: let player skip the intro with SPACE
     this.input.keyboard.once('keydown-SPACE', () => {
       // Stop video & jump to StartScene
       introVideo.stop();
@@ -143,7 +139,6 @@ function preload() {
   this.load.audio('bgMusic', 'assets/music/the_journey.mp3');
 
   // Example "character" image
-  // Make sure the actual file path is correct: 'assets/cats/belen_cat_new.png' or rename it
   this.load.image('belen_cat', 'assets/cats/belen_cat_new.png');
 
   // Example walls/enemies
@@ -168,20 +163,20 @@ function preload() {
 
 // Create function
 function create() {
-  // IMPORTANT: The user must interact before audio plays. So we wait for pointerdown in MainScene.
+  // We can load the bgMusic instance, but don't auto-play it here
+  bgMusic = this.sound.add('bgMusic', { loop: false });
+
+  // Keyboard input
+  cursors = this.input.keyboard.createCursorKeys();
+  spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+
+  // IMPORTANT: Wait for the user's first click in this scene to resume audio context + start music
   this.input.once('pointerdown', () => {
     // Resume audio context
     this.sound.context.resume();
     // Now it's safe to start background music
     bgMusic.play();
   });
-
-  // We can load the bgMusic instance, but don't auto-play it here
-  bgMusic = this.sound.add('bgMusic', { loop: false /* or true if you want looping */ });
-
-  // Keyboard input
-  cursors = this.input.keyboard.createCursorKeys();
-  spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
   // Create the character
   character = this.physics.add.sprite(0, 0, 'belen_cat').setScale(0.2);
@@ -492,7 +487,12 @@ function updateCountdown() {
   }
 }
 
-// Updated playOutro to accept scene
+function handleTimeUp() {
+  // Simple example: restart the entire scene
+  this.scene.restart();
+}
+
+// Updated playOutro to also mute at start, then unmute on pointer if needed
 function playOutro(scene) {
   // Stop background music
   if (bgMusic) {
@@ -518,23 +518,24 @@ function playOutro(scene) {
   const centerX = scene.cameras.main.width / 2;
   const centerY = scene.cameras.main.height / 2;
 
-  // Add the video object, centered
+  // Add the video object, centered, start muted
   const outroVideo = scene.add.video(centerX, centerY, 'outro');
   outroVideo.setOrigin(0.5);
-
-  // Play the video (false -> not looping)
+  outroVideo.setMute(true);     // Mute first to avoid console error
   outroVideo.play(false);
   outroVideo.setPaused(false);
-  outroVideo.setMute(false);
-  outroVideo.setVolume(1);
+
+  // If the AudioContext wasn’t resumed before, we handle it again
+  scene.input.once('pointerdown', () => {
+    scene.sound.context.resume();
+    outroVideo.setMute(false);
+    outroVideo.setVolume(1);
+  });
 }
 
-function handleTimeUp() {
-  // Simple example: restart the entire scene
-  this.scene.restart();
-}
-
+////////////////////////////////////////////////////////////
 // Finally, create the Phaser game instance
+////////////////////////////////////////////////////////////
 const config = {
   type: Phaser.AUTO,
   width: 1000,
