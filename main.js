@@ -134,7 +134,7 @@ let spaceKey;
 
 // Countdown-related variables
 let timerText;
-let countdown = (5 * 60) + 8; // 4 minutes + 8s = 308s
+let countdown = (6 * 60) + 8; // 4 minutes + 8s = 308s
 let shouldCountdown = true;
 
 // Popup text box variables
