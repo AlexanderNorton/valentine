@@ -249,7 +249,7 @@ function create() {
   this.physics.add.collider(character, this.walls);
 
   // Go to the initial room
-  switchRoom(this, 20);
+  switchRoom(this, 0);
 
   timerText = this.add.text(10, 940, formatTime(countdown), {
     font: '52px Arial',
