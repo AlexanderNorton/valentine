@@ -1,11 +1,7 @@
-////////////////////////////////////////////////////////////
-// 1) INTRO SCENE
-////////////////////////////////////////////////////////////
 const IntroScene = {
   key: 'IntroScene',
 
   preload: function () {
-    // Load your intro/outro videos (ensure these files exist in assets/videos)
     this.load.video('intro', 'assets/videos/intro_2.mp4', 'loadeddata', false, false);
     this.load.video('outro', 'assets/videos/outro_2.mp4', 'loadeddata', false, false);
   },
@@ -15,26 +11,22 @@ const IntroScene = {
     const centerX = this.cameras.main.width / 2;
     const centerY = this.cameras.main.height / 2;
 
-    // Add the video object, centered, and keep it muted initially
+    // Add the video object, centered
     const introVideo = this.add.video(centerX, centerY, 'intro');
     introVideo.setOrigin(0.5);
-    introVideo.play(false);     // Play but keep audio muted until user gesture
+
+    // Play the video (false -> not looping)
+    introVideo.play(false);
     introVideo.setPaused(false);
-    introVideo.setMute(true);   // <--- Important: Mute to avoid auto-play audio error
+    introVideo.setMute(false);
+    introVideo.setVolume(1);
 
     // Once the video finishes, automatically move on
     introVideo.once('complete', () => {
       this.scene.start('StartScene');
     });
 
-    // IMPORTANT: On first pointerdown, unmute and resume audio
-    this.input.once('pointerdown', () => {
-      this.sound.context.resume();  // Resume Phaser's audio context
-      introVideo.setMute(false);    // Unmute the video once we have user interaction
-      introVideo.setVolume(1);      
-    });
-
-    // Optional: let player skip the intro with SPACE
+    // Optional: let player skip with SPACE
     this.input.keyboard.once('keydown-SPACE', () => {
       // Stop video & jump to StartScene
       introVideo.stop();
@@ -43,16 +35,14 @@ const IntroScene = {
   }
 };
 
-////////////////////////////////////////////////////////////
+// ----------------------------------------------------
 // 2) START SCENE (HOW TO PLAY / TITLE SCREEN)
-////////////////////////////////////////////////////////////
-let spaceKey;
-
+// ----------------------------------------------------
 const StartScene = {
   key: 'StartScene',
 
   preload: function () {
-    // (Optional) Load a background image or other assets if you want
+    // (Optional) Load a background image or anything else
   },
 
   create: function () {
@@ -100,9 +90,9 @@ const StartScene = {
   }
 };
 
-////////////////////////////////////////////////////////////
+// ----------------------------------------------------
 // 3) MAIN SCENE (YOUR ORIGINAL GAME CODE)
-////////////////////////////////////////////////////////////
+// ----------------------------------------------------
 let currentRoomIndex = 0;
 let character;
 let interactButton;
@@ -111,10 +101,11 @@ let popupElement;
 let roomSound;
 let bgMusic;
 let cursors;
+let spaceKey;
 
 // Countdown-related variables
 let timerText;
-let countdown = (5 * 60) + 8; // e.g. 5:08 total
+let countdown = (5 * 60) + 8; // 4 minutes in seconds = 240
 let shouldCountdown = true;
 
 // Popup text box variables
@@ -127,63 +118,94 @@ let footstepsSound;  // Looping footsteps audio
 
 const MainScene = {
   key: 'MainScene',
+
   preload: preload,
   create: create,
   update: update
 };
 
-// Preload function
+// ---------------------------------------------
+// EXACT DEFINITIONS OF YOUR PRELOAD/CREATE/UPDATE
+// ---------------------------------------------
 function preload() {
-  // *** LOAD ONLY FILES THAT ACTUALLY EXIST IN YOUR REPO ***
-  // Example background music
+  // Background music
   this.load.audio('bgMusic', 'assets/music/the_journey.mp3');
 
-  // Example "character" image
+  // Character image
   this.load.image('belen_cat', 'assets/cats/belen_cat_new.png');
 
-  // Example walls/enemies
+  // Wall image
   this.load.image('wall', 'assets/objects/heartwall.png');
+
+  // Enemy sprites (multiple gremlins)
   this.load.image('enemy1', 'assets/characters/gremlin_1.png');
   this.load.image('enemy2', 'assets/characters/gremlin_2.png');
 
-  // Objects (again, confirm each file truly exists)
+  // Objects
   this.load.image('cap', 'assets/objects/cap.png');
   this.load.image('flight', 'assets/objects/flight.png');
   this.load.image('rose', 'assets/objects/rose.png');
-  // ... etc. for all your objects
+  this.load.image('beach', 'assets/objects/beach.png');
+  this.load.image('camera', 'assets/objects/camera.png');
+  this.load.image('icecream', 'assets/objects/icecream.png');
+  this.load.image('shopping', 'assets/objects/shopping.png');
+  this.load.image('valentine', 'assets/objects/valentine.png');
+  this.load.image('sunglasses', 'assets/objects/sunglasses.png');
+  this.load.image('blackheart', 'assets/objects/blackheart.png');
+  this.load.image('balloon', 'assets/objects/balloon.png');
+  this.load.image('burger', 'assets/objects/burger.png');
+  this.load.image('christmas', 'assets/objects/christmas.png');
+  this.load.image('ear', 'assets/objects/ear.png');
+  this.load.image('fish', 'assets/objects/fish.png');
+  this.load.image('mirror', 'assets/objects/mirror.png');
+  this.load.image('segrada', 'assets/objects/segrada.png');
+  this.load.image('sun', 'assets/objects/sun.png');
+  this.load.image('violin', 'assets/objects/violin.png');
+  this.load.image('whiskey', 'assets/objects/whiskey.png');
+  this.load.image('i20', 'assets/objects/i20.png');
 
-  // Some example sounds
+  // Sounds
   this.load.audio('room1Sound', 'assets/sounds/oeea.mp3');
   this.load.audio('room2Sound', 'assets/sounds/chipi.mp3');
-  // ... etc. for all your custom room sounds
+  this.load.audio('room3Sound', 'assets/sounds/drums.mp3');
+  this.load.audio('room4Sound', 'assets/sounds/tiktok.mp3');
+  this.load.audio('room5Sound', 'assets/sounds/back.mp3');
+  this.load.audio('room6Sound', 'assets/sounds/bruh.mp3');
+  this.load.audio('room7Sound', 'assets/sounds/cash.mp3');
+  this.load.audio('room8Sound', 'assets/sounds/cena.mp3');
+  this.load.audio('room9Sound', 'assets/sounds/epic.mp3');
+  this.load.audio('room10Sound', 'assets/sounds/fine.mp3');
+  this.load.audio('room11Sound', 'assets/sounds/good.mp3');
+  this.load.audio('room12Sound', 'assets/sounds/holy.mp3');
+  this.load.audio('room13Sound', 'assets/sounds/suspense.mp3');
+  this.load.audio('room14Sound', 'assets/sounds/tiktok.mp3');
+  this.load.audio('room15Sound', 'assets/sounds/oeea.mp3');
+  this.load.audio('room16Sound', 'assets/sounds/chipi.mp3');
+  this.load.audio('room17Sound', 'assets/sounds/oeea.mp3');
+  this.load.audio('room18Sound', 'assets/sounds/chipi.mp3');
+  this.load.audio('room19Sound', 'assets/sounds/holy.mp3');
+  this.load.audio('room20Sound', 'assets/sounds/oeea.mp3');
+  this.load.audio('room21Sound', 'assets/sounds/kids.mp3');
 
   // NEW: Footsteps audio
   this.load.audio('footsteps', 'assets/sounds/footsteps.mp3');
 }
 
-// Create function
 function create() {
-  // We can load the bgMusic instance, but don't auto-play it here
+  // Loop background music
   bgMusic = this.sound.add('bgMusic', { loop: false });
+  bgMusic.play();
 
   // Keyboard input
   cursors = this.input.keyboard.createCursorKeys();
   spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
-  // IMPORTANT: Wait for the user's first click in this scene to resume audio context + start music
-  this.input.once('pointerdown', () => {
-    // Resume audio context
-    this.sound.context.resume();
-    // Now it's safe to start background music
-    bgMusic.play();
-  });
-
-  // Create the character
+  // Create the character (sprite for physics/collisions)
   character = this.physics.add.sprite(0, 0, 'belen_cat').setScale(0.2);
   character.setCollideWorldBounds(true);
   character.setOrigin(0.5, 0.5);
 
-  // Create the interactable button (texture is set per-room in switchRoom)
+  // Create the interactable button
   interactButton = this.physics.add.sprite(0, 0, '').setScale(0.1);
   interactButton.setInteractive();
 
@@ -252,14 +274,13 @@ function create() {
   footstepsSound = this.sound.add('footsteps', { loop: true });
 
   walkingGif = this.add.dom(character.x, character.y, 'img');
-  walkingGif.node.src = 'assets/cats/bouncy.gif'; // Confirm this file exists
+  walkingGif.node.src = 'assets/cats/bouncy.gif';
   walkingGif.setOrigin(-50, -50);
   walkingGif.node.style.display = 'none';
   walkingGif.node.style.width = character.displayWidth + 'px';
   walkingGif.node.style.height = character.displayHeight + 'px';
 }
 
-// Update function
 function update() {
   // Player movement
   if (cursors.left.isDown) {
@@ -300,7 +321,7 @@ function update() {
     }
   }
 
-  // Press SPACE to show/hide popup (if close enough to button)
+  // Press SPACE for showing/hiding popup (if close enough to button)
   if (Phaser.Input.Keyboard.JustDown(spaceKey)) {
     if (!popupShown) {
       const distance = Phaser.Math.Distance.Between(
@@ -321,9 +342,9 @@ function update() {
   });
 }
 
-////////////////////////////////////////////////////////////
-// HELPER FUNCTIONS
-////////////////////////////////////////////////////////////
+// ----------------------------------
+// ROOM / GAME HELPER FUNCTIONS
+// ----------------------------------
 function switchRoom(scene, index) {
   currentRoomIndex = index;
   const room = rooms[currentRoomIndex];
@@ -352,7 +373,7 @@ function switchRoom(scene, index) {
   // Clear old walls
   scene.walls.clear(true, true);
 
-  // Create new walls
+  // Create new walls for this room
   if (room.walls && room.walls.length) {
     room.walls.forEach((wallData) => {
       const wallSprite = scene.walls.create(wallData.x, wallData.y, wallData.texture);
@@ -408,9 +429,9 @@ function showPopup(scene) {
   // Show the image popup
   popupElement.setPosition(scene.game.config.width / 2, scene.game.config.height / 2);
   popupElement.node.style.display = 'block';
-  popupElement.node.src = room.popupImage + '?t=' + Date.now(); // cache-buster
+  popupElement.node.src = room.popupImage + '?t=' + Date.now();
 
-  // Show the text at the top
+  // Show the text box at the top
   popupText.setText(room.popupText || '');
   popupText.setVisible(true);
   popupTextBackground.setVisible(true);
@@ -440,16 +461,14 @@ function hidePopup(scene) {
   // Resume physics
   scene.physics.world.resume();
 
-  // Resume background music if it was playing
-  if (bgMusic && bgMusic.isPaused) {
-    bgMusic.resume();
-  }
+  // Resume background music
+  bgMusic.resume();
 }
 
 function goToNextRoom(scene) {
-  // Check if we've reached the end of the rooms array
+  // Check if we've reached the end of the rooms:
   if (currentRoomIndex === rooms.length - 1) {
-    // Show the outro if it’s the last room
+    // Pass the scene object to playOutro
     playOutro(scene);
     return;
   }
@@ -459,10 +478,13 @@ function goToNextRoom(scene) {
 }
 
 function handleGameOver(player, enemy) {
-  // Example: just restart the current room
+  // Restart the scene from the current room
   switchRoom(this, currentRoomIndex);
 }
 
+// ----------------------------------
+// COUNTDOWN HELPER FUNCTIONS
+// ----------------------------------
 function formatTime(seconds) {
   const minutes = Math.floor(seconds / 60);
   let partInSeconds = seconds % 60;
@@ -476,8 +498,8 @@ function updateCountdown() {
   }
   timerText.setText(formatTime(countdown));
 
-  // Turn red at halfway point if desired
-  if (countdown === Math.floor(((5 * 60) + 8) / 2)) {
+  // Turn red at halfway point
+  if (countdown === Math.floor(((4 * 60) + 8) / 2)) {
     timerText.setStyle({ fill: '#ff0000' });
   }
 
@@ -487,55 +509,53 @@ function updateCountdown() {
   }
 }
 
-function handleTimeUp() {
-  // Simple example: restart the entire scene
-  this.scene.restart();
-}
-
-// Updated playOutro to also mute at start, then unmute on pointer if needed
+// Updated playOutro to accept 'scene' explicitly
 function playOutro(scene) {
   // Stop background music
-  if (bgMusic) {
-    bgMusic.stop();
-  }
+  bgMusic.stop();
 
   popupShown = false;
-  shouldCountdown = false;
+  shouldCountdown = false
 
-  // Hide the popup
+  // Hide the image popup
   popupElement.node.style.display = 'none';
   popupElement.node.src = '';
+
+  // Hide the text box
   popupText.setVisible(false);
   popupTextBackground.setVisible(false);
 
-  // Stop room sound if any
+
+  // Stop previous room sound
   if (roomSound) {
     roomSound.stop();
   }
+
 
   popupTextBackground.setVisible(false);
 
   const centerX = scene.cameras.main.width / 2;
   const centerY = scene.cameras.main.height / 2;
 
-  // Add the video object, centered, start muted
+  // Add the video object, centered
   const outroVideo = scene.add.video(centerX, centerY, 'outro');
   outroVideo.setOrigin(0.5);
-  outroVideo.setMute(true);     // Mute first to avoid console error
+
+  // Play the video (false -> not looping)
   outroVideo.play(false);
   outroVideo.setPaused(false);
-
-  // If the AudioContext wasn’t resumed before, we handle it again
-  scene.input.once('pointerdown', () => {
-    scene.sound.context.resume();
-    outroVideo.setMute(false);
-    outroVideo.setVolume(1);
-  });
+  outroVideo.setMute(false);
+  outroVideo.setVolume(1);
 }
 
-////////////////////////////////////////////////////////////
-// Finally, create the Phaser game instance
-////////////////////////////////////////////////////////////
+function handleTimeUp() {
+  // Simple example: just restart the whole scene
+  this.scene.restart();
+}
+
+// ----------------------------------------------------
+// 4) PHASER GAME CONFIG – Now with 3 Scenes
+// ----------------------------------------------------
 const config = {
   type: Phaser.AUTO,
   width: 1000,
@@ -551,7 +571,9 @@ const config = {
       debug: false
     }
   },
+  // The order matters: we start with the IntroScene -> StartScene -> MainScene
   scene: [IntroScene, StartScene, MainScene]
 };
 
+// Finally, create the Phaser game instance
 const game = new Phaser.Game(config);
